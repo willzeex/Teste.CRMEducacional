@@ -1,0 +1,88 @@
+﻿@model Prova.CRM.Educacional.Web.Models.AlunoViewModel
+@using Prova.CRM.Educacional.Domain.Enum;
+@using Prova.CRM.Educacional.Web.Models;
+
+@{
+    ViewBag.Title = "Registrar";
+    string mensagem = null;
+    TipoMensagem tipoMensagem = 0;
+    if (TempData["message"] != null)
+    {
+        mensagem = ((MensagemViewModel)TempData["message"]).Mensagem;
+        tipoMensagem = ((MensagemViewModel)TempData["message"]).TipoMensagem;
+    }
+}
+
+<h2>Registrar</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.firstname, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.firstname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.firstname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.cad_cpf, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.cad_cpf, new { htmlAttributes = new { @class = "form-control cpf" } })
+                @Html.ValidationMessageFor(model => model.cad_cpf, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.cad_datanascimento, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.cad_datanascimento, new { htmlAttributes = new { @class = "form-control date" } })
+                @Html.ValidationMessageFor(model => model.cad_datanascimento, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.emailaddress1, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.emailaddress1, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.emailaddress1, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Enviar" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Content/Plugin/jquery-mask/jquery.mask.min.js"></script>
+
+    <script>
+        $(function () {
+            $('.cpf').mask('000.000.000-00')
+            $('.date').mask('00/00/0000')
+            exibeMensagem()
+        })
+
+        exibeMensagem = function () {
+            debugger
+            var message = '@mensagem'
+            var tipoMessage = '@tipoMensagem'
+            if (message && tipoMessage) {
+                if (tipoMessage === '@TipoMensagem.Sucesso') {
+                    toastr.success(message)
+                } else if (tipoMessage === '@TipoMensagem.Erro') {
+                    toastr.error(message)
+                }
+            }
+        }
+    </script>
+}

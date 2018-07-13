@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Ensalamento</h2>
+<hr />
+
+<div class="row">
+    <div class="Col-md-12">
+        <div class="form-group">
+            <input type="file" id="txtUpload" name="txtUpload" />
+        </div>
+
+        <div class="form-group">
+            <input id="btnProcessar" type="submit" value="Processar" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+
+<div id="resultado"></div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $("#btnProcessar").hide()
+            $("#txtUpload").on("change", function (e) {
+                var files = e.target.files
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        var formData = new FormData()
+
+                        for (var x = 0; x < files.length; x++) {
+                            formData.append("file" + x, files[x])
+                        }
+
+                        var url = '@Url.Action("ImportarArquivo", "Ensalamento")'
+                        portFile(url, formData).done(function () {
+                            $("#btnProcessar").show()
+                        })
+                    }
+                } else {
+                    alert("Este navegador não suporte HTML5 file upload!");
+                }
+            })
+
+            $("#btnProcessar").on('click', function (e) {
+                var url = '@Url.Action("ProcessarEnsalamento", "Ensalamento")'
+                $.post(url, function (data) {
+                    $("#resultado").html(data)
+                })
+            })
+        })
+
+        portFile = function (url, data) {
+            return $.ajax({
+                type: "POST",
+                url: url,
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (result) {
+                },
+                error: function (xhr) {
+                    if (xhr.responseText && xhr.responseText[0] == "{")
+                        err = JSON.parse(xhr.responseText).Message
+                    console.log(err)
+                }
+            })
+        }
+    </script>
+}
